@@ -38,8 +38,7 @@ namespace TestTextJustify
         /// <returns></returns>
         private IEnumerable<char> ListOfSpaceChar(int size)
         {
-            int count = 0;
-            while(count++ < size)
+            while(size-- > 0)
             {
                 yield return ' ';
             }
@@ -73,11 +72,16 @@ namespace TestTextJustify
         /// <summary>
         /// Generate string of space chars
         /// </summary>
-        /// <param name="l">Result string length</param>
+        /// <param name="length">Result string length</param>
         /// <returns></returns>
-        private string GenerateSpaceStringNative(int length)
+        private StringBuilder GenerateSpaceStringBuilder(int length)
         {
-            return new string(ListOfSpaceCharNative(length));
+            StringBuilder result = new StringBuilder(length);
+            while(length-- > 0)
+            {
+                result.Append(' ');
+            }
+            return result;
         }
 
         /// <summary>
@@ -107,7 +111,6 @@ namespace TestTextJustify
         /// Convert string array to stringbuilder array
         /// </summary>
         /// <param name="x"></param>
-        /// <param name="l">Max capacity</param>
         /// <returns></returns>
         private StringBuilder[] GetStringBuilders(string[] x)
         {
@@ -142,17 +145,15 @@ namespace TestTextJustify
             if (arrayLength == 1)
             {
                 string firstString = x[0];
-                if (stringsLength == l)
                 {
-                    return firstString;
-                }
+                    if (stringsLength == l)
+                    {
+                        return firstString;
+                    }
 
-#if UseNative
-                string sep = GenerateSpaceStringNative(l - firstString.Length);
-#else
-                string sep = GenerateSpaceString(l - firstString.Length);
-#endif
-                return firstString + sep;
+                    StringBuilder sep = GenerateSpaceStringBuilder(l - firstString.Length);
+                    return firstString + sep;
+                }
             }
 
             int itemIndex = -1;
